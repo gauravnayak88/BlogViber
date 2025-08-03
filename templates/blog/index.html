@@ -2,42 +2,74 @@
 {% block title %}Home{% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container">
-    <div class="row mt-5 pt-3">
-        <div class="col-md-4">
-            <div class="card my-3 shadow">
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Create a New Post</h5>
+                </div>
                 <div class="card-body">
                     <form method="POST">
                         {% csrf_token %}
-                        {{form|crispy}}
-                        <input class="btn btn-primary" type="submit" value="Post">
+                        {{ form|crispy }}
+                        <div class="d-grid mt-3">
+                            <button class="btn btn-success" type="submit">Post Now</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
+
+        <div class="col-lg-8">
+            <h2 class="mb-4">Recent Posts</h2>
             {% if posts %}
             {% for post in posts %}
-            <div class="card shadow my-2">
+            <div class="card shadow-sm mb-4 border-0">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <img class="img-thumbnail" src="{{ post.author.profilemodel.image.url }}" alt="img">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-3">
+                            {% if post.author.profilemodel.image %}
+                            <img class="img-fluid rounded-start post-image" src="{{ post.author.profilemodel.image.url }}" alt="Profile Image">
+                            {% else %}
+                            <img class="img-fluid rounded-start post-image" src="https://via.placeholder.com/150" alt="Default Profile Image">
+                            {% endif %}
                         </div>
-                        <div class="col-md-8">
-                            <small>{{post.date_created}}</small>
-                            <hr>
-                            <a class="h3" href="{% url 'blog-post-detail' post.id %}">{{post.title}}</a>
-                            <p class="text-justify my-3">
-                                {{post.content}}
+                        <div class="col-md-9">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 class="mb-0">
+                                    <a href="{% url 'blog-post-detail' post.id %}" class="text-decoration-none text-primary">{{ post.title }}</a>
+                                </h4>
+                                <small class="text-muted">{{ post.date_created|date:"F d, Y" }}</small>
+                            </div>
+                            <p class="card-text text-secondary line-clamp-3">
+                                {{ post.content }}
                             </p>
+                            <a href="{% url 'blog-post-detail' post.id %}" class="btn btn-outline-primary btn-sm mt-2">Read More &rarr;</a>
                         </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
+            {% else %}
+            <div class="alert alert-info" role="alert">
+                No posts found. Be the first to post something!
+            </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+<style>
+    .post-image {
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+    }
+    .line-clamp-3 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+</style>
 {% endblock %}

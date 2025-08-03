@@ -2,29 +2,30 @@
 {% block title %}Login Page{% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="cover">
-<div class="container">
-    <div class="row mt-5 pt-3">
-        <div class="col-md-5 offset-md-6">
-            <div class="card my-3 shadow">
+<div class="container cover py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card shadow-sm mt-5">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Login to Your Account</h4>
+                </div>
                 <div class="card-body">
-                    <h1>Login Page</h1>
-                    <hr>
                     <form method="POST">
                         {% csrf_token %}
-                        {{form|crispy}}
-                        <input class="btn btn-primary" type="submit" value="Login">
+                        {{ form|crispy }}
+                        <div class="d-grid mt-3">
+                            <button class="btn btn-primary" type="submit">Login</button>
+                        </div>
                     </form>
-                    <div class="text-center my-3">
-                        <a href="{% url 'password_reset' %}">Forgot Password</a>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'password_reset' %}" class="text-decoration-none">Forgot Password?</a>
                     </div>
-                    <div class="text-center">
-                        <a class="btn btn-success" href="{% url 'users-sign-up' %}">Create Account</a>
-                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <small class="text-muted">Don't have an account? <a href="{% url 'users-sign-up' %}" class="text-decoration-none">Create Account</a></small>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 {% endblock %}
