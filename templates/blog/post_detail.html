@@ -37,8 +37,12 @@
                                 {% for comment in post.comment_set.all %}
                                 <div class="mb-3">
                                     <small class="fw-bold">{{ comment.user.username }}</small>
-                                    <p class="mb-0">{{ comment.content }}</p>
                                     <small class="text-muted">{{ comment.date_posted|date:"M d, Y" }}</small>
+                                    {% if comment.user == request.user %}
+                                    <a href="{% url 'comment-edit' comment.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                                    <a href="{% url 'comment-delete' comment.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                                    {% endif %}
+                                    <p class="mb-0">{{ comment.content }}</p>
                                 </div>
                                 {% empty %}
                                 <p class="text-muted">No comments yet. Be the first to comment!</p>

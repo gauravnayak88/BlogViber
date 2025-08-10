@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import PostModel
+from .models import PostModel, Comment
 from .forms import PostModelForm, PostUpdateForm, CommentForm
 from django.contrib.auth.decorators import login_required
 
@@ -67,3 +67,32 @@ def post_delete(request, pk):
         'post':post
     }
     return render(request, 'blog/post_delete.html', context)
+
+@login_required
+def comment_delete(request, cid):
+    comment = Comment.objects.get(pk=cid)
+    print(comment.content)
+    pid=comment.post.id
+    comment.delete()
+    return redirect('blog-post-detail', pk=pid)
+
+@login_required
+def comment_edit(request, cid):
+    comment = Comment.objects.get(pk=cid)
+
+    if comment.user != request.user:
+        return redirect('blog-post-detail', pk=comment.post.id)  # Prevent unauthorized edits
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('blog-post-detail', pk=comment.post.id)
+    else:
+        form = CommentForm(instance=comment)
+
+    context = {
+        'form': form,
+        'comment': comment
+    }
+    return render(request, 'blog/comment_edit.html', context)
